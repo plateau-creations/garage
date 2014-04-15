@@ -4,7 +4,7 @@ use File;
 use Illuminate\Filesystem\FileNotFoundException;
 
 /* Simple class that leverage the use of relative path for accessing 
-	files from php */
+	in a local filesystem */
 class FileDepot {
 	
 	protected $storagePath;

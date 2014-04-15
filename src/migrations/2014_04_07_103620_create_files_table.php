@@ -12,7 +12,6 @@ class CreateFilesTable extends Migration {
 		$this->dbPrefix = Config::get('garage::db_prefix');
 	}
 
-
 	/**
 	 * Run the migrations.
 	 *

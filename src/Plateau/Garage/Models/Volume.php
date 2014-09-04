@@ -7,10 +7,11 @@ use App;
 
 class Volume extends Eloquent {
 	
-	
+	public $timestamps = false;
+
 	public function __construct()
 	{
-		$this->table = App::make('config')->get('garage::db_prefix').'files';
+		$this->table = App::make('config')->get('garage::db_prefix').'volumes';
 		parent::__construct();
 	}
 

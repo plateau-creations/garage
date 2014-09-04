@@ -239,7 +239,7 @@ class FileDepot {
 	 * @param  string  $directory
 	 * @return array
 	 */
-	public function allFiles($directory)
+	public function allFiles($directory = '')
 	{
 		return File::allFiles($this->computePath($directory));
 	}
@@ -350,11 +350,16 @@ class FileDepot {
 		return md5_file($this->computePath($path));
 	}
 
+	public function getAbsolutePath($path)
+	{
+		return $this->computePath($path);
+	}
+
 	protected function computePath($path)
 	{
 		$path = $this->storagePath.'/'.$path;
 		
-		$this->ensureDirExists($path);
+		//$this->ensureDirExists($path);
 		
 		return $path;
 	}

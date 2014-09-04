@@ -1,7 +1,10 @@
 <?php
-namespace Plateau\Garage\Volumes;
+namespace Plateau\Garage\Scripts;
 
 use Plateau\Garage\FileDepot;
+use Plateau\Garage\Models\Volume;
+use Plateau\Garage\Repositories\FileCatalog;
+use Log;
 
 class VolumeUpdater {
 
@@ -18,7 +21,7 @@ class VolumeUpdater {
 	{
 		$this->volume = $volume;
 		$this->fileCatalog = $fileCatalog;
-		$this->fileDepot = new $volume->getDepot();		
+		$this->fileDepot = $volume->getDepot();		
 		$this->updateReport = new UpdateReport;
 	}
 
@@ -38,15 +41,20 @@ class VolumeUpdater {
 			}
 
 			// Calculate md5
-			$md5 = $this->fileDepot->md5($file);
+			$md5 = $this->fileDepot->md5($path);
 
 			// Check by md5
 			if ($existingFile = $this->fileCatalog->findByMd5($md5, $this->volume) )
 			{
+				// Skip 0 sized files
+				if ($existingFile->size == 0) continue;
+
 				// if found -> rename file in catalog
-				//  NOTE : We might consider additionnal checks,
-				//  as file of size 0, 1, 2, etc are likely to produce
-				//  identical md5. 
+				$this->updateReport->log('Le fichier ' . $existingFile->path ." a été renommé en ".$path);
+
+				$existingFile->path = $path;
+				$existingFile->save();
+				
 				
 				continue;
 			}
@@ -54,12 +62,31 @@ class VolumeUpdater {
 			$newFile = $this->fileCatalog->getNew();
 			$newFile->path = $path;
 			$newFile->md5 = $md5;
-			$newFile->size = $this->fileDepot->size($file);
+			$newFile->size = $this->fileDepot->size($path);
+			$newFile->volume_id = $this->volume->id;
 			$newFile->save();
+			$this->updateReport->log('Le fichier ' . $path ." a été ajouté");
 		}
+
+		// Now check for missing files
+		$this->findMissingFiles();
 
 		return $this->updateReport;
 	}
 
+	protected function findMissingFiles()
+	{
+		$files = $this->volume->files()->get();
+
+		foreach ($files as $file)
+		{
+			if (! $this->fileDepot->exists($file->path))
+			{
+				$this->updateReport->log('Le fichier ' . $file->path  ." a été supprimé.");
+
+				$file->delete();
+			}
+		}
+	}
 	
 }

@@ -27,7 +27,7 @@ class CreateFilesTable extends Migration {
 			$table->integer('size');
 			$table->integer('volume_id');
 			$table->timestamps();
-		}
+		});
 	}
 
 	/**

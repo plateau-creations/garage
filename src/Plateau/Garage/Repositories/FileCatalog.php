@@ -35,7 +35,8 @@ class FileCatalog {
 		$file = File::where('volume_id', '=', $volume->id)->where('path', '=', $path)->first();
 
 		if ($file)
-		{
+		{	
+			
 			return true;
 		}
 		else return false;

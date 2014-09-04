@@ -1,6 +1,6 @@
 <?php
 return array(
 
-	'db_prefix' => '';
+	'db_prefix' => '',
 
 );

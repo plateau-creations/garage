@@ -29,6 +29,10 @@ class GarageServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		//
+		$this->app->bindShared('garage', function($app)
+		{
+			return new \Plateau\Garage\Garage($app);
+		});
 	}
 
 	/**

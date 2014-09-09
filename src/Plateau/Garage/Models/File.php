@@ -26,4 +26,15 @@ class File extends Eloquent {
 
 		return $depot->getAbsolutePath($this->path);
 	}	
+
+
+	public function getFileName()
+	{
+		return pathinfo($this->path, PATHINFO_BASENAME);
+	}
+
+	public function isMissing()
+	{
+		return $this->missing;
+	}
 }

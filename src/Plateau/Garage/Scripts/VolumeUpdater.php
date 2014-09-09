@@ -84,7 +84,9 @@ class VolumeUpdater {
 			{
 				$this->updateReport->log('Le fichier ' . $file->path  ." a été supprimé.");
 
-				$file->delete();
+				$file->missing = true;
+
+				$file->save();
 			}
 		}
 	}

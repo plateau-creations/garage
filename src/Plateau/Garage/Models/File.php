@@ -10,6 +10,7 @@ class File extends Eloquent {
 	public function __construct()
 	{
 		$this->table = App::make('config')->get('garage::db_prefix').'files';
+
 		parent::__construct();
 	}
 
@@ -27,6 +28,14 @@ class File extends Eloquent {
 		return $depot->getAbsolutePath($this->path);
 	}	
 
+	public function check()
+	{
+		$volume = $this->volume()->first();
+
+		$depot = new FileDepot($volume->path);
+
+		return $depot->exists($this->path);
+	}
 
 	public function getFileName()
 	{
